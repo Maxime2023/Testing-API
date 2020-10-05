@@ -69,10 +69,13 @@ class App extends Component {
 
   callApi = () => {
     const url = [
-      "https://jsonplaceholder.typicode.com/todos/1",
-      "https://2fthddyg5m.execute-api.eu-central-1.amazonaws.com/Prod/get/get?map=cp%2F3876_australia_vodafone_062018.map&srs=EPSG%3A3857&transparent=true&format=image%2Fpng&exceptions=application%2Fvnd.ogc.se_xml&styles=&tiled=true&feature_count=101&service=WMS&version=1.1.1&request=GetMap&layers=ORTHO&bbox=15429272.781532537%2C-4138606.4594725817%2C15439056.72115304%2C-4128822.5198520795&width=256&height=256",
-      "https://3kzsy3ah3h.execute-api.eu-central-1.amazonaws.com/Prod/tms/mosaic/ndvimask/1/0/1/1/1/1.png",
-      `https://vr77y6sw57.execute-api.eu-central-1.amazonaws.com/TestCognitoToken/${this.state.api}`
+      "https://okvx3d38ef.execute-api.eu-central-1.amazonaws.com/Prod/Get",
+      "https://okvx3d38ef.execute-api.eu-central-1.amazonaws.com/Prod/GetProxy/get",
+      "https://okvx3d38ef.execute-api.eu-central-1.amazonaws.com/Prod/GetProxy/post",
+      //"https://2fthddyg5m.execute-api.eu-central-1.amazonaws.com/Prod/get/get?map=cp%2F3876_australia_vodafone_062018.map&srs=EPSG%3A3857&transparent=true&format=image%2Fpng&exceptions=application%2Fvnd.ogc.se_xml&styles=&tiled=true&feature_count=101&service=WMS&version=1.1.1&request=GetMap&layers=ORTHO&bbox=15429272.781532537%2C-4138606.4594725817%2C15439056.72115304%2C-4128822.5198520795&width=256&height=256",
+      //"https://3kzsy3ah3h.execute-api.eu-central-1.amazonaws.com/Prod/tms/mosaic/ndvimask/1/0/1/1/1/1.png",
+      //`https://vr77y6sw57.execute-api.eu-central-1.amazonaws.com/TestCognitoToken/${this.state.api}`
+      "https://okvx3d38ef.execute-api.eu-central-1.amazonaws.com/Prod/DynamoDB/get"
     ]
     // axios.get(url[this.state.apiSelected], this.state.config).then((response) => {
     //   var test = btoa(unescape(encodeURIComponent(response.data)));
@@ -87,6 +90,7 @@ class App extends Component {
       xhr.open("GET", this.state.value, true);
     }
     else {
+      console.log("url", url[this.state.apiSelected])
       xhr.open("GET", url[this.state.apiSelected], true);
     }
     if (this.state.isHeader)
@@ -139,6 +143,36 @@ class App extends Component {
     });
   }
 
+  addTable = () => {
+    var xhr = new XMLHttpRequest();
+    xhr.open("GET", "https://okvx3d38ef.execute-api.eu-central-1.amazonaws.com/Prod/GetProxy/get", true);
+    xhr.onload = function (e) {
+
+      if (xhr.readyState === 4) {
+        if (xhr.status === 200) {
+          console.log("reponse :", xhr.responseText)
+          this.openNotification("L'API a été correctement appelée", "", "green");
+        } else {
+          console.error(xhr.statusText);
+          this.openNotification(`erreur status : ${xhr.status}`, "Une erreur s'est produite lors de l'appel", "red");
+        }
+      }
+    }.bind(this);
+    xhr.onerror = function (e) {
+      console.error(xhr.statusText);
+      this.openNotification( `erreur status : ${xhr.status}`, "Une erreur s'est produite lors de l'appel", "red")
+    }.bind(this);
+    xhr.send(null);
+  }
+
+  showTable = () => {
+    
+  }
+
+  incTable = () => {
+    
+  }
+
   render() {
     const style = {width: "60%", marginLeft: "20%", marginTop: "2%", textAlign: "center"}
     if (this.state.isLogedIn) {
@@ -183,6 +217,21 @@ class App extends Component {
           :
           <div></div>
         }
+        <div>
+          <div style={style}>
+            <Button onClick={this.addTable}>Ajouter Dans la table</Button>
+          </div>
+          <div style={style}>
+            <Button onClick={this.incTable}>Incrementer la valeur</Button>
+          </div>
+          <div style={style}>
+            <Button onClick={this.showTable}>Afficher la valeur</Button>
+          </div>
+          <div style={style}>
+            Valeur de maxime.dizier.luxcarta@gmail.com dans la table :
+          </div>
+
+        </div>
       </>
       )
     }
